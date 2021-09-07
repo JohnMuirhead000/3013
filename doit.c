@@ -39,18 +39,18 @@ main(int argc, char **argv)
     else
     {
         int counter = 0;
-	    char* tok[10];
-	    char input[128];
+	char* tok[10];
+	char input[128];
 
         printf("==>");
         fflush(stdout);
         fgets(input, 128, stdin);
-	    fflush(stdout);
+	fflush(stdout);
         tok[0] = strtok(input, " ");
-	    printf("storng is %s\n", tok[0]);
+	printf("storng is %s\n", tok[0]);
         while (tok[counter] != NULL)
         {
-	        counter++;
+	    counter++;
             tok[counter] = strtok(NULL, " ");
         }
 	    arg = tok[0];
