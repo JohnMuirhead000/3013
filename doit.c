@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <stdlib.h>
+#include <string.h>
+#include <sys/wait.h>
 #include <unistd.h>
 #include <sys/resource.h>
 #include <sys/time.h>
@@ -18,13 +20,6 @@ main(int argc, char **argv)
     struct timeval clockE;
     struct timezone timeZone;
     gettimeofday(&clockS, &timeZone);
-    bool hasArgs = (argc > 1);
-
-
-    /* print out the arguments */
-    printf("There are %d arguments\n", argc);
-    for (i = 0; i < argc; i++)
-        printf("%s\n", argv[i]);
 
     if (argc > 1)
     {
@@ -35,47 +30,44 @@ main(int argc, char **argv)
         }
         arguments[argc-1] = NULL;
 
-    }
-    else
-    {
-        int counter = 0;
-	    char* tok[10];
-	    char input[128];
-
-        printf("==>");
-        fflush(stdout);
+    }else{
+        char input[128];
+	printf("==>");
         fgets(input, 128, stdin);
-	    fflush(stdout);
-        tok[0] = strtok(input, " ");
-	    printf("storng is %s\n", tok[0]);
-        while (tok[counter] != NULL)
+        char *tok = strtok(input, " ,\n");
+        int counter = 0;
+        char** commands = malloc(sizeof(char*) * 128);
+
+        while(tok != NULL)
         {
-	        counter++;
-            tok[counter] = strtok(NULL, " ");
+            commands[counter] = tok;
+            counter++;
+            tok = strtok(NULL, " ,\n");
+
         }
-	    arg = tok[0];
+        commands[counter] = NULL;
+
+        arg = commands[0];
         for (int i = 0; i < counter; i++)
         {
-            arguments[i] = tok[i];
+            arguments[i] = commands[i];
         }
+	arguments[counter] = NULL;
     }
-
     if ((pid = fork()) < 0)
     {
         fprintf(stderr, "Fork error\n");
         exit(1);
     }
     else if (pid == 0)
-    {
-        /*child*/
-        printf("child");
+    { 
         execvp(arg,arguments);
         exit(0);
     }
     else
     {
         /* parent */
-        wait();
+        wait(NULL);
         getrusage(RUSAGE_CHILDREN, &usage);
         printf("The Amount of CPU time was %d milleseconds\n", usage.ru_utime.tv_usec);
         gettimeofday(&clockE, &timeZone);
@@ -85,5 +77,5 @@ main(int argc, char **argv)
         printf("the number of major page faults, which require disk I/O,is %d\n",usage.ru_majflt);
         printf("the number of minor page faults, which could be satisfied without disk I/O is %d\n",usage.ru_minflt);
         printf("the maximum resident set size used,in kilobytes is %d\n",usage.ru_maxrss);
-    }
+	}
 }
