@@ -31,28 +31,36 @@ main(int argc, char **argv)
         arguments[argc-1] = NULL;
 
     }else{
-        char input[128];
-	printf("==>");
-        fgets(input, 128, stdin);
-        char *tok = strtok(input, " ,\n");
-        int counter = 0;
-        char** commands = malloc(sizeof(char*) * 128);
-
-        while(tok != NULL)
+        while (1)
         {
-            commands[counter] = tok;
-            counter++;
-            tok = strtok(NULL, " ,\n");
+            char input[128];
+            printf("==>");
+            fgets(input, 128, stdin);
+            char *tok = strtok(input, " ,\n");
+            int counter = 0;
+            char** commands = malloc(sizeof(char*) * 128);
 
-        }
-        commands[counter] = NULL;
+            while(tok != NULL)
+            {
+                commands[counter] = tok;
+                counter++;
+                tok = strtok(NULL, " ,\n");
 
-        arg = commands[0];
-        for (int i = 0; i < counter; i++)
-        {
-            arguments[i] = commands[i];
+            }
+            commands[counter] = NULL;
+
+            arg = commands[0];
+            for (int i = 0; i < counter; i++)
+            {
+                arguments[i] = commands[i];
+            }
+            arguments[counter] = NULL;
+
+            if (arguments[0] != NULL)
+            {
+                break;
+            }
         }
-	arguments[counter] = NULL;
     }
     if ((pid = fork()) < 0)
     {
