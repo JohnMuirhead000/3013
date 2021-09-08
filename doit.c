@@ -19,6 +19,8 @@ main(int argc, char **argv)
     struct timeval clockS;
     struct timeval clockE;
     struct timezone timeZone;
+    char* prompt = "==>";
+    bool running = true;
     gettimeofday(&clockS, &timeZone);
 
     if (argc > 1)
@@ -31,17 +33,15 @@ main(int argc, char **argv)
         arguments[argc-1] = NULL;
 
     }else{
-        while (1)
-        {
+        while (1) {
             char input[128];
-            printf("==>");
+            printf("%s", prompt);
             fgets(input, 128, stdin);
             char *tok = strtok(input, " ,\n");
             int counter = 0;
-            char** commands = malloc(sizeof(char*) * 128);
+            char **commands = malloc(sizeof(char *) * 128);
 
-            while(tok != NULL)
-            {
+            while (tok != NULL) {
                 commands[counter] = tok;
                 counter++;
                 tok = strtok(NULL, " ,\n");
@@ -50,14 +50,46 @@ main(int argc, char **argv)
             commands[counter] = NULL;
 
             arg = commands[0];
-            for (int i = 0; i < counter; i++)
-            {
+            for (int i = 0; i < counter; i++) {
                 arguments[i] = commands[i];
             }
             arguments[counter] = NULL;
 
-            if (arguments[0] != NULL)
-            {
+            if (arguments[0] != NULL) {
+                break;
+            }
+        }
+    }
+    if (!(strcmp(arg, "exit"))) {
+        printf("Ending the Program. NOW!\n");
+        exit(0);
+    }
+    if ((!(strcmp(arg, "set"))) && (!(strcmp(arguments[1], "prompt"))) && (!(strcmp(arguments[2], "=")))) {
+        printf("setting new prompt:\n");
+        prompt = arguments[3];
+        while (1) {
+            char input[128];
+            printf("%s", prompt);
+            fgets(input, 128, stdin);
+            char *tok = strtok(input, " ,\n");
+            int counter = 0;
+            char **commands = malloc(sizeof(char *) * 128);
+
+            while (tok != NULL) {
+                commands[counter] = tok;
+                counter++;
+                tok = strtok(NULL, " ,\n");
+
+            }
+            commands[counter] = NULL;
+
+            arg = commands[0];
+            for (int i = 0; i < counter; i++) {
+                arguments[i] = commands[i];
+            }
+            arguments[counter] = NULL;
+
+            if (arguments[0] != NULL) {
                 break;
             }
         }
