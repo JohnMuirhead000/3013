@@ -37,11 +37,17 @@ main(int argc, char **argv)
             char input[128];
             printf("%s", prompt);
             fgets(input, 128, stdin);
+            if (strstr(input, "\\0") != NULL)
+            {
+                printf("Due to end-of-line, we are ending the program\n");
+                exit(0);
+            }
             char *tok = strtok(input, " ,\n");
             int counter = 0;
             char **commands = malloc(sizeof(char *) * 128);
 
-            while (tok != NULL) {
+            while (tok != NULL)
+            {
                 commands[counter] = tok;
                 counter++;
                 tok = strtok(NULL, " ,\n");
@@ -64,13 +70,19 @@ main(int argc, char **argv)
         printf("Ending the Program. NOW!\n");
         exit(0);
     }
-    if ((!(strcmp(arg, "set"))) && (!(strcmp(arguments[1], "prompt"))) && (!(strcmp(arguments[2], "=")))) {
+    if ((!(strcmp(arg, "set"))) && (!(strcmp(arguments[1], "prompt"))) && (!(strcmp(arguments[2], "="))))
+    {
         printf("setting new prompt:\n");
         prompt = arguments[3];
         while (1) {
             char input[128];
             printf("%s", prompt);
             fgets(input, 128, stdin);
+            if (strstr(input, "\\0") != NULL)
+            {
+                printf("Due to end-of-line, we are ending the program\n");
+                exit(0);
+            }
             char *tok = strtok(input, " ,\n");
             int counter = 0;
             char **commands = malloc(sizeof(char *) * 128);
